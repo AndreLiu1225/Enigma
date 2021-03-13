@@ -176,7 +176,7 @@ optional-django==0.1.0
 packaging==20.4
 pafy==0.5.5
 palettable==3.3.0
-pandas==1.2.2
+pandas==1.2.3
 pandocfilters==1.4.3
 papermill==2.2.2
 parsel==1.6.0
