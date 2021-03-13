@@ -29,6 +29,7 @@ from waitress import serve
 # from __init__ import login_manager
 
 nltk.download('stopwords')
+nltk.download('punkt')
 stop_words = set(stopwords.words('english'))
 punctuation = punctuation + '\n' + '—' + '“' + ',' + '”' + '‘' + '-' + '’'
 warnings.filterwarnings('ignore')
