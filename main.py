@@ -279,25 +279,25 @@ contractions_re = re.compile('(%s)' % '|'.join(contractions_dict.keys()))
 
 #url="%s" % (url)
 def scrape_articles(url):
-    url_i = newspaper.Article(url=url, language='en')
+    url_i = newspaper.Article(url="%s" % (url), language='en')
     url_i.download()
     url_i.parse()
     return url_i.text
 
 def scrape_authors(url):
-    url_i = newspaper.Article(url=url, language="en")
+    url_i = newspaper.Article(url="%s" % (url), language="en")
     url_i.download()
     url_i.parse()
     return url_i.authors
 
 def scrape_publishdate(url):
-    url_i = newspaper.Article(url=url, language="en")
+    url_i = newspaper.Article(url="%s" % (url), language="en")
     url_i.download()
     url_i.parse()
     return url_i.publish_date
 
 def scrape_keywords(url):
-    url_i = newspaper.Article(url=url, language="en")
+    url_i = newspaper.Article(url="%s" % (url), language="en")
     url_i.download()
     url_i.parse()
     return url_i.keywords
