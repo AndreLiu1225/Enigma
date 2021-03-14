@@ -462,7 +462,7 @@ app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config['MAIL_USE_TLS'] = False
-app.config["MAIL_USERNAME"] = 'andreliu2004@gmail.com'
+app.config["MAIL_USERNAME"] = 'enigmatext1225@gmail.com'
 app.config["MAIL_PASSWORD"] = 'andre1225'
 ADMINS = ['andreliu2004@gmail,com']
 
