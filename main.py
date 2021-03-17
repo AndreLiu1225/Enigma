@@ -449,7 +449,7 @@ def article_summarize(artefact):
     
     summarized_article = summary(sentence_score_OwO)
     
-    return summarized_article
+    return summarized_article[0]
 
 # print(article_summarize(scrape_articles("https://edition.cnn.com/2021/02/28/politics/donald-trump-cpac-speech-fact-check/index.html")))
 
