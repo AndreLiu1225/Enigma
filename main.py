@@ -483,6 +483,10 @@ def page_not_found(e):
 def about():
     return render_template('about.html')
 
+@app.route('/in-progress')
+def inprogress():
+    return render_template('progress.html')
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
   form = ContactForm()
