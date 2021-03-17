@@ -469,10 +469,10 @@ ADMINS = ['andreliu2004@gmail,com']
 mail.init_app(app)
 
 class ContactForm(FlaskForm):
-    name = StringField("Name", [DataRequired()])
-    email = StringField("Email", [DataRequired(), Email(message=('Not a valid email address'))])
-    subject = StringField("Subject", [DataRequired()])
-    message = TextAreaField("Message", [DataRequired(), Length(min=4, message=('Your message is too short.'))])
+    name = StringField("Name", [DataRequired(), Length(max=15, min=2)])
+    email = StringField("Email", [DataRequired(), Email(message=('Not a valid email address')), Length(max=30, min=2)])
+    subject = StringField("Subject", [DataRequired(), Length(max=30, min=2)])
+    message = TextAreaField("Message", [DataRequired(), Length(min=4, message=('Your message is too short.'), max=400)])
     submit = SubmitField("Send")
 
 @app.errorhandler(404)
