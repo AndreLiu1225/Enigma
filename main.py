@@ -6,6 +6,7 @@ import warnings
 import re
 import nltk
 nltk.download('stopwords')
+nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from gensim.models import Word2Vec
