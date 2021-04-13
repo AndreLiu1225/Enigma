@@ -1,282 +1,31 @@
 import numpy as np
 import pandas as pd
 import warnings
+
+# Importing summarization packages
 import re
 import nltk
-from nltk import word_tokenize
 from nltk.tokenize import sent_tokenize
-from textblob import TextBlob
-import string
-from string import punctuation
 from nltk.corpus import stopwords
-from statistics import mean
-from heapq import nlargest
-from wordcloud import WordCloud
-from flask import Flask, render_template, request, jsonify, url_for, flash
+from gensim.models import Word2Vec
+from scipy import spatial
+import networkx as nx
+
+# Flask packages
+from flask import Flask, render_template, request, jsonify, url_for, flash, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email
 from flask_mail import Mail, Message
+
 import newspaper
 import json
 import email_validator
 import os
 from waitress import serve
-# from forms import SignupForm
-# from flask_login import login_required, logout_user, current_user, login_user
-# from forms import LoginForm, SignupForm
-# from models import db, User
-# from __init__ import login_manager
+from newspaper import fulltext
 
-nltk.download('stopwords')
-nltk.download('punkt')
-stop_words = set(stopwords.words('english'))
-punctuation = punctuation + '\n' + '—' + '“' + ',' + '”' + '‘' + '-' + '’'
-warnings.filterwarnings('ignore')
-
-contractions_dict = { 
-"ain't": "am not",
-"aren't": "are not",
-"can't": "cannot",
-"can't've": "cannot have",
-"'cause": "because",
-"could've": "could have",
-"couldn't": "could not",
-"couldn't've": "could not have",
-"didn't": "did not",
-"doesn't": "does not",
-"doesn’t": "does not",
-"don't": "do not",
-"don’t": "do not",
-"hadn't": "had not",
-"hadn't've": "had not have",
-"hasn't": "has not",
-"haven't": "have not",
-"he'd": "he had",
-"he'd've": "he would have",
-"he'll": "he will",
-"he'll've": "he will have",
-"he's": "he is",
-"how'd": "how did",
-"how'd'y": "how do you",
-"how'll": "how will",
-"how's": "how is",
-"i'd": "i would",
-"i'd've": "i would have",
-"i'll": "i will",
-"i'll've": "i will have",
-"i'm": "i am",
-"i've": "i have",
-"isn't": "is not",
-"it'd": "it would",
-"it'd've": "it would have",
-"it'll": "it will",
-"it'll've": "it will have",
-"it's": "it is",
-"let's": "let us",
-"ma'am": "madam",
-"mayn't": "may not",
-"might've": "might have",
-"mightn't": "might not",
-"mightn't've": "might not have",
-"must've": "must have",
-"mustn't": "must not",
-"mustn't've": "must not have",
-"needn't": "need not",
-"needn't've": "need not have",
-"o'clock": "of the clock",
-"oughtn't": "ought not",
-"oughtn't've": "ought not have",
-"shan't": "shall not",
-"sha'n't": "shall not",
-"shan't've": "shall not have",
-"she'd": "she would",
-"she'd've": "she would have",
-"she'll": "she will",
-"she'll've": "she will have",
-"she's": "she is",
-"should've": "should have",
-"shouldn't": "should not",
-"shouldn't've": "should not have",
-"so've": "so have",
-"so's": "so is",
-"that'd": "that would",
-"that'd've": "that would have",
-"that's": "that is",
-"there'd": "there would",
-"there'd've": "there would have",
-"there's": "there is",
-"they'd": "they would",
-"they'd've": "they would have",
-"they'll": "they will",
-"they'll've": "they will have",
-"they're": "they are",
-"they've": "they have",
-"to've": "to have",
-"wasn't": "was not",
-"we'd": "we would",
-"we'd've": "we would have",
-"we'll": "we will",
-"we'll've": "we will have",
-"we're": "we are",
-"we've": "we have",
-"weren't": "were not",
-"what'll": "what will",
-"what'll've": "what will have",
-"what're": "what are",
-"what's": "what is",
-"what've": "what have",
-"when's": "when is",
-"when've": "when have",
-"where'd": "where did",
-"where's": "where is",
-"where've": "where have",
-"who'll": "who will",
-"who'll've": "who will have",
-"who's": "who is",
-"who've": "who have",
-"why's": "why is",
-"why've": "why have",
-"will've": "will have",
-"won't": "will not",
-"won't've": "will not have",
-"would've": "would have",
-"wouldn't": "would not",
-"wouldn't've": "would not have",
-"y'all": "you all",
-"y’all": "you all",
-"y'all'd": "you all would",
-"y'all'd've": "you all would have",
-"y'all're": "you all are",
-"y'all've": "you all have",
-"you'd": "you would",
-"you'd've": "you would have",
-"you'll": "you will",
-"you'll've": "you will have",
-"you're": "you are",
-"you've": "you have",
-"ain’t": "am not",
-"aren’t": "are not",
-"can’t": "cannot",
-"can’t’ve": "cannot have",
-"’cause": "because",
-"could’ve": "could have",
-"couldn’t": "could not",
-"couldn’t’ve": "could not have",
-"didn’t": "did not",
-"doesn’t": "does not",
-"don’t": "do not",
-"don’t": "do not",
-"hadn’t": "had not",
-"hadn’t’ve": "had not have",
-"hasn’t": "has not",
-"haven’t": "have not",
-"he’d": "he had",
-"he’d’ve": "he would have",
-"he’ll": "he will",
-"he’ll’ve": "he will have",
-"he’s": "he is",
-"how’d": "how did",
-"how’d’y": "how do you",
-"how’ll": "how will",
-"how’s": "how is",
-"i’d": "i would",
-"i’d’ve": "i would have",
-"i’ll": "i will",
-"i’ll’ve": "i will have",
-"i’m": "i am",
-"i’ve": "i have",
-"isn’t": "is not",
-"it’d": "it would",
-"it’d’ve": "it would have",
-"it’ll": "it will",
-"it’ll’ve": "it will have",
-"it’s": "it is",
-"let’s": "let us",
-"ma’am": "madam",
-"mayn’t": "may not",
-"might’ve": "might have",
-"mightn’t": "might not",
-"mightn’t’ve": "might not have",
-"must’ve": "must have",
-"mustn’t": "must not",
-"mustn’t’ve": "must not have",
-"needn’t": "need not",
-"needn’t’ve": "need not have",
-"o’clock": "of the clock",
-"oughtn’t": "ought not",
-"oughtn’t’ve": "ought not have",
-"shan’t": "shall not",
-"sha’n’t": "shall not",
-"shan’t’ve": "shall not have",
-"she’d": "she would",
-"she’d’ve": "she would have",
-"she’ll": "she will",
-"she’ll’ve": "she will have",
-"she’s": "she is",
-"should’ve": "should have",
-"shouldn’t": "should not",
-"shouldn’t’ve": "should not have",
-"so’ve": "so have",
-"so’s": "so is",
-"that’d": "that would",
-"that’d’ve": "that would have",
-"that’s": "that is",
-"there’d": "there would",
-"there’d’ve": "there would have",
-"there’s": "there is",
-"they’d": "they would",
-"they’d’ve": "they would have",
-"they’ll": "they will",
-"they’ll’ve": "they will have",
-"they’re": "they are",
-"they’ve": "they have",
-"to’ve": "to have",
-"wasn’t": "was not",
-"we’d": "we would",
-"we’d’ve": "we would have",
-"we’ll": "we will",
-"we’ll’ve": "we will have",
-"we’re": "we are",
-"we’ve": "we have",
-"weren’t": "were not",
-"what’ll": "what will",
-"what’ll’ve": "what will have",
-"what’re": "what are",
-"what’s": "what is",
-"what’ve": "what have",
-"when’s": "when is",
-"when’ve": "when have",
-"where’d": "where did",
-"where’s": "where is",
-"where’ve": "where have",
-"who’ll": "who will",
-"who’ll’ve": "who will have",
-"who’s": "who is",
-"who’ve": "who have",
-"why’s": "why is",
-"why’ve": "why have",
-"will’ve": "will have",
-"won’t": "will not",
-"won’t’ve": "will not have",
-"would’ve": "would have",
-"wouldn’t": "would not",
-"wouldn’t’ve": "would not have",
-"y’all": "you all",
-"y’all": "you all",
-"y’all’d": "you all would",
-"y’all’d’ve": "you all would have",
-"y’all’re": "you all are",
-"y’all’ve": "you all have",
-"you’d": "you would",
-"you’d’ve": "you would have",
-"you’ll": "you will",
-"you’ll’ve": "you will have",
-"you’re": "you are",
-"you’re": "you are",
-"you’ve": "you have",
-}
-contractions_re = re.compile('(%s)' % '|'.join(contractions_dict.keys()))
+stop_words = stopwords.words('english')
 
 #url="%s" % (url)
 def scrape_articles(url):
@@ -303,168 +52,22 @@ def scrape_keywords(url):
     url_i.parse()
     return url_i.keywords
 
-# Function to clean html from the article
-def cleanhtml(raw_html):
-    cleanr = re.compile('<.*?>')
-    cleantext = re.sub(cleanr, '', raw_html)
-    return cleantext
-
-# Function expand the contractions if there's any
-def expand_contractions(s, contractions_dict=contractions_dict):
-    def replace(match):
-        return contractions_dict[match.group(0)]
-    return contractions_re.sub(replace, s)
-
-# Function to preprocess the articles
-def preprocessing(article):
-    global article_sent
-    
-    # Converting to lowercase
-    # article = article.str.lower()
-    
-    # Removing the HTML
-    article = article.apply(lambda x: cleanhtml(x))
-    
-    # Removing the email ids
-    article = article.apply(lambda x: re.sub('\S+@\S+','', x))
-    
-    # Removing The URLS
-    article = article.apply(lambda x: re.sub("((http\://|https\://|ftp\://)|(www.))+(([a-zA-Z0-9\.-]+\.[a-zA-Z]{2,4})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(/[a-zA-Z0-9%:/-_\?\.'~]*)?",'', x))
-    
-    # Removing the '\xa0'
-    article = article.apply(lambda x: x.replace("\xa0", " "))
-    
-    # Removing the contractions
-    article = article.apply(lambda x: expand_contractions(x))
-    
-    # Stripping the possessives
-    article = article.apply(lambda x: x.replace("'s", ''))
-    article = article.apply(lambda x: x.replace('’s', ''))
-    article = article.apply(lambda x: x.replace("\'s", ''))
-    article = article.apply(lambda x: x.replace("\’s", ''))
-    
-    # Removing the Trailing and leading whitespace and double spaces
-    article = article.apply(lambda x: re.sub(' +', ' ',x))
-    
-    # Copying the article for the sentence tokenization
-    article_sent = article.copy()
-    
-    # Removing punctuations from the article
-    article = article.apply(lambda x: ''.join(word for word in x if word not in punctuation))
-    
-    # Removing the Trailing and leading whitespace and double spaces again as removing punctuation might
-    # Lead to a white space
-    article = article.apply(lambda x: re.sub(' +', ' ',x))
-    
-    # Removing the Stopwords
-    article = article.apply(lambda x: ' '.join(word for word in x.split() if word not in stop_words))
-    
-    return article
-
-# Function to normalize the word frequency which is used in the function word_frequency
-def normalize(li_word):
-    global normalized_freq
-    normalized_freq = []
-    for dictionary in li_word:
-        max_frequency = max(dictionary.values())
-        for word in dictionary.keys():
-            dictionary[word] = dictionary[word]/max_frequency
-        normalized_freq.append(dictionary)
-    return normalized_freq
-
-# Function to calculate the word frequency
-def word_frequency(article_word):
-    word_frequency = {}
-    li_word = []
-    for sentence in article_word:
-        for word in word_tokenize(sentence):
-            if word not in word_frequency.keys():
-                word_frequency[word] = 1
-            else:
-                word_frequency[word] += 1
-        li_word.append(word_frequency)
-        word_frequency = {}
-    normalize(li_word)
-    return normalized_freq
-
-# Function to Score the sentence which is called in the function sent_token
-def sentence_score(li):
-    global sentence_score_list
-    sentence_score = {}
-    sentence_score_list = []
-    for list_, dictionary in zip(li, normalized_freq):
-        for sent in list_:
-            for word in word_tokenize(sent):
-                if word in dictionary.keys():
-                    if sent not in sentence_score.keys():
-                        sentence_score[sent] = dictionary[word]
-                    else:
-                        sentence_score[sent] += dictionary[word]
-        sentence_score_list.append(sentence_score)
-        sentence_score = {}
-    return sentence_score_list
-
-# Function to tokenize the sentence
-def sent_token(article_sent):
-    sentence_list = []
-    sent_token = []
-    for sent in article_sent:
-        token = sent_tokenize(sent)
-        for sentence in token:
-            token_2 = ''.join(word for word in sentence if word not in punctuation)
-            token_2 = re.sub(' +', ' ',token_2)
-            sent_token.append(token_2)
-        sentence_list.append(sent_token)
-        sent_token = []
-    sentence_score(sentence_list)
-    return sentence_score_list
-
-# Function which generates the summary of the articles (This uses the 20% of the sentences with the highest score)
-def summary(sentence_score_OwO):
-    summary_list = []
-    for summ in sentence_score_OwO:
-        select_length = int(len(summ)*0.25)
-        summary_ = nlargest(select_length, summ, key = summ.get)
-        summary_list.append(".".join(summary_))
-    return summary_list
-
-# Functions to change the article string (if passed) to change it to generate a pandas series
-def make_series(art):
-    global dataframe
-    data_dict = {'article' : [art]}
-    dataframe = pd.DataFrame(data_dict)['article']
-    return dataframe
-
-# Function which is to be called to generate the summary which in further calls other functions alltogether
-def article_summarize(artefact):
-    
-    if type(artefact) != pd.Series:
-        artefact = make_series(artefact)
-    
-    df = preprocessing(artefact)
-    
-    word_normalization = word_frequency(df)
-    
-    sentence_score_OwO = sent_token(article_sent)
-    
-    summarized_article = summary(sentence_score_OwO)
-    
-    return summarized_article[0]
-
-# print(article_summarize(scrape_articles("https://edition.cnn.com/2021/02/28/politics/donald-trump-cpac-speech-fact-check/index.html")))
-
-"""-----------------FLASK APP CODE-----------------"""
 app = Flask(__name__)
 app.secret_key = "Andre1225"
 mail = Mail()
 
+UPLOAD_FOLDER = 'C:/Users/liuis/Desktop/g_summary/Enigma/static/styles/upload'
+
+# Configurations for mailing service
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config['MAIL_USE_TLS'] = False
-app.config["MAIL_USERNAME"] = 'enigmatext1225@gmail.com'
+app.config["MAIL_USERNAME"] = 'andreliu2004@gmail.com'
 app.config["MAIL_PASSWORD"] = 'andre1225'
 ADMINS = ['andreliu2004@gmail,com']
+ALLOWED_EXTENSIONS = ['.csv', 'xls', 'xlsx', 'xlsm']
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 mail.init_app(app)
 
@@ -508,16 +111,44 @@ def contact():
   elif request.method == 'GET':
     return render_template('contact_us.html', form=form)
 
+global _summary
+    
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         url = request.form.get("url")
-        summary = article_summarize(scrape_articles(url))
+        text = scrape_articles(url)
+        sentences = sent_tokenize(text)
+        sentences_clean = [re.sub(r'[^\w\s]','',sentence.lower()) for sentence in sentences]
+        sentence_tokens=[[words for words in sentence.split(' ') if words not in stop_words] for sentence in sentences_clean]
+
+        # Computing word embedding
+        w2v = Word2Vec(sentence_tokens, size=1, min_count=1, iter=1000)
+        sentence_embeddings=[[w2v[word][0] for word in words] for words in sentence_tokens]
+        max_len=max([len(tokens) for tokens in sentence_tokens])
+        sentence_embeddings=[np.pad(embedding,(0,max_len-len(embedding)),'constant') for embedding in sentence_embeddings]
+
+        # Creating Markov Similarity Matrix
+        similarity_matrix = np.zeros([len(sentence_tokens), len(sentence_tokens)])
+        for i,row_embedding in enumerate(sentence_embeddings):
+            for j,column_embedding in enumerate(sentence_embeddings):
+                similarity_matrix[i][j] = 1-spatial.distance.cosine(row_embedding,column_embedding)
+
+        # Pagerank Implementation
+        nx_graph = nx.from_numpy_array(similarity_matrix)
+        scores = nx.pagerank(nx_graph)
+
+        top_sentence={sentence:scores[index] for index,sentence in enumerate(sentences)}
+        top=dict(sorted(top_sentence.items(), key=lambda x: x[1], reverse=True)[:10])
+        
+        s_list = []
+        for sent in sentences:
+            if sent in top.keys():
+                s_list.append(sent)
+        _summary = " ".join(s_list)
         authors = scrape_authors(url)
         publish_date = scrape_publishdate(url)
-        # response_json = jsonify({'text': summary})
-        # return json.dumps(summary, sort_keys=True, indent=4, separators=(',', ': '))
-        return render_template('results.html', summary=summary, authors=authors, publish_date=publish_date)
+        return render_template('results.html', summary=_summary, authors=authors, publish_date=publish_date)
     else:
         return render_template('index.html')
 
