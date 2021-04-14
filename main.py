@@ -138,7 +138,7 @@ def index():
 
         # Pagerank Implementation
         nx_graph = nx.from_numpy_array(similarity_matrix)
-        scores = nx.pagerank(nx_graph, max_iter=600)
+        scores = nx.pagerank(nx_graph, max_iter=1000)
 
         top_sentence={sentence:scores[index] for index,sentence in enumerate(sentences)}
         top=dict(sorted(top_sentence.items(), key=lambda x: x[1], reverse=True)[:10])
