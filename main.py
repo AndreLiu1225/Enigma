@@ -103,14 +103,14 @@ vector = TfidfVectorizer(max_df=0.3, stop_words="english", lowercase=True, use_i
     	                norm=u'l2', smooth_idf=True)
 tfidf = vector.fit_transform(description)
 
-def search(tfidf_matrix, model, request, top_n=5):
+def search(tfidf_matrix, model, request, top_n=2):
     request_transfrom = model.transform([request])
     similarity = np.dot(request_transfrom, np.transpose(tfidf_matrix))
     x = np.array(similarity.toarray()[0])
-    indices = np.argsort(x)[-5:][::-1]
+    indices = np.argsort(x)[-2:][::-1]
     return indices
 
-def find_similar(tfidf_matrix, index, top_n=5):
+def find_similar(tfidf_matrix, index, top_n=2):
     cosine_similarities = linear_kernel(tfidf_matrix[index:index+1], tfidf_matrix).flatten()
     related_docs_indices = [i for i in cosine_similarities.argsort()[::-1] if i != index]
     return[index for index in related_docs_indices][0:top_n]
@@ -469,7 +469,7 @@ def analyze_url():
         authors = scrape_authors(url)
         title = scrape_title(url)
         article = title.lower()
-        result = search(tfidf, vector, article, top_n=5)
+        result = search(tfidf, vector, article, top_n=2)
         recommended_data = print_result(title, result, df)
         msg = Message('Here are some recommended articles to summarize!', sender="EnigmaText.service@gmail.com", recipients=[current_user.email])
         for i in recommended_data:
