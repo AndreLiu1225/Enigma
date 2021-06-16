@@ -52,6 +52,7 @@ from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.metrics import pairwise_distances
 import requests
 
+nltk.download('stopwords')
 stop_words = stopwords.words('english')
 
 #url="%s" % (url)
