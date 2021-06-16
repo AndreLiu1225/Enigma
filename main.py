@@ -406,7 +406,7 @@ def textrank(text):
 
     # Computing word embedding
     w2v = Word2Vec(sentence_tokens, vector_size=1, min_count=1, epochs=1000)
-    sentence_embeddings=[[w2v[word][0] for word in words] for words in sentence_tokens]
+    sentence_embeddings=[[w2v.wv[word][0] for word in words] for words in sentence_tokens]
     max_len=max([len(tokens) for tokens in sentence_tokens])
     sentence_embeddings=[np.pad(embedding,(0,max_len-len(embedding)),'constant') for embedding in sentence_embeddings]
 
