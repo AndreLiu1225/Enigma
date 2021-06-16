@@ -7,13 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
-  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
-  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
-  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
-  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
-</script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -45,7 +38,7 @@
           <ul class="navbar-nav ml-auto">
   
             <li class="nav-item active">
-              <a class="nav-link" href="/">Summarize
+              <a class="nav-link" href="/">Summarize Url
                 <span class="sr-only">(current)</span>
               </a>
             </li>
@@ -53,14 +46,31 @@
             <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
             </li>
-  
-           <li class="nav-item">
-              <a class="nav-link" href="/in-progress">Survey Analytics(Coming soon)</a>
-           </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/summarize-text">Summarize Text</a>
+            </li>
   
             <li class="nav-item"> 
             <a class="nav-link" href="/contact">Contact</a>
             </li>
+
+            {% if current_user.is_authenticated %}
+              <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('account') }}">Account</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+              </li>
+
+              <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}">register</a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -83,13 +93,10 @@
         </div>
         <div class="box">
             <h2>03</h2>
-            <h3>Contact me</h3>
-            <p>If you have experience in Natural Language Processing and would like to be a contributor to this project. Please do contact me by my email.</p>
+            <h3>Big fan of this project?</h3>
+            <p>If you have experience with Natural Language Processing
+               or have experience in creating cool animations with CSS and HTML, or just genuinely interested in this project. Please do contact me at the contact page. P.S. Don't spam</p>
         </div>
     </div>
-    <script type="text/javascript">
-  rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
-  rg4js('enablePulse', true);
-</script>
 </body>
 </html>

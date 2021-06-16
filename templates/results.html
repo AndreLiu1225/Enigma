@@ -6,13 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
-  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
-  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
-  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
-  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
-</script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -25,17 +18,13 @@
       <h2>Summary</h2>
       <p>{{ summary }}</p>
     </article>
-    <article class="article_authors">
-      <h2>Authors</h2>
-      <p>{{ authors }}</p>
+    <article class="final_time">
+      <h2>Reading Time</h2>
+      <p><span style="color: #0091ea;">{{ final_reading_time }} min </span></p>
     </article>
-    <article class="article_publish_date">
-      <h2>Publish Date</h2>
-      <p>{{ publish_date }}</p>
+    <article class="summary_time">
+      <h2>Summary's Reading Time</h2>
+      <p><span style="color: #0091ea;">{{ summary_reading_time }} min </span></p>
     </article>
   </article>
-    <script type="text/javascript">
-  rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
-  rg4js('enablePulse', true);
-</script>
 </body>

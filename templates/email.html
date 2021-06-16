@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+      <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+      <title>Text Summarization</title>
+  </head>
+  <body>
+  <div style="background-color:#eee;padding:10px 20px;">
+    <h2 style="font-family:Georgia, 'Times New Roman', Times, serif;color: #ff226d">{{ title }}</h2>
+    </div>
+    <div style="padding:20px 0px">
+        <div style="height: 500px;width:400px">
+            <img src="{{ img_url }}" style="height: 300px;">
+            <div style="text-align:center;">
+                <h3>Recommended article to summarize</h3>
+                <p>Based on your previously read and summarized articles, here is a recommended article.</p>
+                <a href="{{ link }}">Read more</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
