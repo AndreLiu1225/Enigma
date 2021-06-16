@@ -7,20 +7,16 @@
       <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
       <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
       <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
       <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
       <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-
       <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
       <title>Text Summarization</title>
   </head>
@@ -61,7 +57,6 @@
             <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" href="/summarize-text">Summarize Text</a>
             </li>
@@ -69,7 +64,6 @@
             <li class="nav-item"> 
             <a class="nav-link" href="/contact">Contact</a>
             </li>
-
             {% if current_user.is_authenticated %}
               <li class="nav-item">
               <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
@@ -81,7 +75,6 @@
               <li class="nav-item">
               <a class="nav-link" href="{{ url_for('login') }}">Login</a>
               </li>
-
               <li class="nav-item">
               <a class="nav-link" href="{{ url_for('register') }}">register</a>
               </li>
@@ -91,6 +84,29 @@
       </div>
     </nav>
   </div>
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="content-section">
+                    <div class="content-section">
+                        <div class="row">
+                            <div class="col-md-8">
+                                {% with messages = get_flashed_messages(with_categories=true) %}
+                                    {% if messages %}
+                                        {% for category, message in messages %}
+                                            <div class="alert alert-{{ category }}">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </main>
   <div class="content-section">
     <div class="media">
       <img class="rounded-circle account-img" src="{{ image_file }}">
@@ -105,7 +121,6 @@
               <legend class="border-bottom mb-4">Account Info</legend>
               <div class="form-group">
                   {{ form.username.label(class="form-control-label") }}
-
                   {% if form.username.errors %}
                       {{ form.username(class="form-control form-control-lg is-invalid") }}
                       <div class="invalid-feedback">
