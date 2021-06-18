@@ -52,8 +52,6 @@ from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.metrics import pairwise_distances
 import requests
 
-nltk.download('punkt')
-nltk.download('stopwords')
 stop_words = stopwords.words('english')
 
 #url="%s" % (url)
@@ -93,7 +91,7 @@ def scrape_image(url):
     url_i.parse()
     return url_i.top_image
 
-df = pd.read_csv('recommendation/output/processed_news_articles.csv')
+df = pd.read_csv('C:/Users/liuis/Desktop/g_summary/Enigma/recommendation/output/processed_news_articles.csv')
 df = df[pd.isna(df["headline"])==False]
 df = df[pd.isna(df["short_description"])==False]
 
@@ -145,18 +143,18 @@ mail.init_app(app)
 response = Response()
 
 class ContactForm(FlaskForm):
-    name = StringField("Name", [DataRequired(), Length(max=15, min=2)])
-    email = StringField("Email", [DataRequired(), Email(message=('Not a valid email address')), Length(max=30, min=2)])
-    subject = StringField("Subject", [DataRequired(), Length(max=30, min=2)])
-    message = TextAreaField("Message", [DataRequired(), Length(min=4, message=('Your message is too short.'), max=400)])
+    name = StringField("Name", [DataRequired(), Length(max=15, min=2)], render_kw={"placeholder": "Enter your name"})
+    email = StringField("Email", [DataRequired(), Email(message=('Not a valid email address')), Length(max=30, min=2)], render_kw={"placeholder": "Enter your email"})
+    subject = StringField("Subject", [DataRequired(), Length(max=30, min=2)], render_kw={"placeholder": "Enter the subject of your email"})
+    message = TextAreaField("Message", [DataRequired(), Length(min=4, message=('Your message is too short.'), max=400)], render_kw={"placeholder": "Enter your message"})
     submit = SubmitField("Send")
 
 # Registration form
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [DataRequired(), Length(max=15, min=2)])
-    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)])
-    password = PasswordField('Password', [DataRequired()])
-    confirm_password = PasswordField('Password', [DataRequired(), EqualTo('password')])
+    username = StringField('Username', [DataRequired(), Length(max=15, min=2)], render_kw={"placeholder": "Enter your username"})
+    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email"})
+    password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
+    confirm_password = PasswordField('Password', [DataRequired(), EqualTo('password')], render_kw={"placeholder": "Confirm your password"})
     submit = SubmitField('Sign Up')
 
     # If username already exist, raise error
@@ -172,8 +170,8 @@ class RegistrationForm(FlaskForm):
 
 # Login form
 class LoginForm(FlaskForm):
-    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)])
-    password = PasswordField('Password', [DataRequired()])
+    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your name"})
+    password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
@@ -197,7 +195,7 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That email is taken. Please choose a different one.')
 
 class RequestResetForm(FlaskForm):
-    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)])
+    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email and we will get back to you shortly"})
     submit = SubmitField('Request Password Reset')
 
     def validate_email(self, email):
@@ -206,8 +204,8 @@ class RequestResetForm(FlaskForm):
             raise ValidationError('There is no account with that email. You must register first.')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', [DataRequired()])
-    confirm_password = PasswordField('Password', [DataRequired(), EqualTo('password')])
+    password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
+    confirm_password = PasswordField('Confirm Password', [DataRequired(), EqualTo('password')], render_kw={"placeholder": "Confirm your password"})
     submit = SubmitField('Reset Password')
 
 @login_manager.user_loader
