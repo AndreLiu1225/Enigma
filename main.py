@@ -93,7 +93,7 @@ def scrape_image(url):
     url_i.parse()
     return url_i.top_image
 
-df = pd.read_csv('C:/Users/liuis/Desktop/g_summary/Enigma/recommendation/output/processed_news_articles.csv')
+df = pd.read_csv('recommendation/output/processed_news_articles.csv')
 df = df[pd.isna(df["headline"])==False]
 df = df[pd.isna(df["short_description"])==False]
 
