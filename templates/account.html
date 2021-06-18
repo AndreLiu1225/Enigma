@@ -1,179 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-      <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
-      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
-      <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-      <!-- Required meta tags -->
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
-  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
-  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
-  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
-  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
-</script>
-      <title>Text Summarization</title>
-  </head>
-  <body>
-  <!-- Navigation -->
-  <div class="fixed-top">
-    <header class="topbar">
-        <div class="container">
-          <div class="row">
-            <!-- social icon-->
-            <div class="col-sm-12">
-              <ul class="social-network">
-                <li><a class="waves-effect waves-dark" href="https://www.instagram.com/andre_documentation/?hl=en"><i class="fa fa-instagram"></i></a></li> 
-                <li><a class="waves-effect waves-dark" href="https://github.com/AndreLiu1225"><i class="fa fa-github"></i></a></li>
-                <li><a class="waves-effect waves-dark" href="https://www.linkedin.com/in/andre-liu-009733184/"><i class="fa fa-linkedin-square"></i></a></li>
-              </ul>
-            </div>
-  
-          </div>
-        </div>
-    </header>
-    <nav class="navbar navbar-expand-lg navbar-dark mx-background-top-linear">
-      <div class="container">
-        <a class="navbar-brand" href="index.html" style="text-transform: uppercase;"> Enigma.COM</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-  
-          <ul class="navbar-nav ml-auto">
-  
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Summarize Url
-                <span class="sr-only">(current)</span>
-              </a>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
+    <title>Text Summarization</title>
+</head>
+<body>
+  <header>
+    <div class="container" id="navbarResponsive">
+      <h1 class="logo">TextByte</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="/">Summarize Url
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/about">About</a>
+          </li>
+
+          <li>
+            <a href="/summarize-text">Summarize Text</a>
+          </li>
+
+          <li> 
+          <a href="/contact">Contact</a>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li>
+            <a href="{{ url_for('logout') }}">Logout</a>
             </li>
-  
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
+            <li>
+            <a href="{{ url_for('account') }}">Account</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/summarize-text">Summarize Text</a>
+          {% else %}
+            <li>
+            <a href="{{ url_for('login') }}">Login</a>
             </li>
-  
-            <li class="nav-item"> 
-            <a class="nav-link" href="/contact">Contact</a>
+
+            <li>
+            <a href="{{ url_for('register') }}">register</a>
             </li>
-            {% if current_user.is_authenticated %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('account') }}">Account</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('register') }}">register</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+          {% endif %}
+        </ul>
+      </nav>    
   </div>
-    <main role="main" class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="content-section">
-                    <div class="content-section">
-                        <div class="row">
-                            <div class="col-md-8">
-                                {% with messages = get_flashed_messages(with_categories=true) %}
-                                    {% if messages %}
-                                        {% for category, message in messages %}
-                                            <div class="alert alert-{{ category }}">
-                                                {{ message }}
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endwith %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             </div>
-         </div>
-     </main>
-  <div class="content-section">
-    <div class="media">
-      <img class="rounded-circle account-img" src="{{ image_file }}">
-      <div class="media-body">
-        <h2 class="account-heading">{{ current_user.username }}</h2>
-        <p class="text-secondary">{{ current_user.email }}</p>
-      </div>
-    </div>
+  </header>
+  <div class="summary">
+      <img class="rounded-circle account-img" src="{{ image_file }}" style="border: 1px solid #03BFCB; padding: 7px;">
+        <h2>{{ current_user.username }}</h2>
+        <p>{{ current_user.email }}</p>
       <form method="POST" action="" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
-          <fieldset class="form-group">
-              <legend class="border-bottom mb-4">Account Info</legend>
-              <div class="form-group">
-                  {{ form.username.label(class="form-control-label") }}
+              <h2>Account Info</h2>
+                  {{ form.username.label(class="input") }}
+
                   {% if form.username.errors %}
-                      {{ form.username(class="form-control form-control-lg is-invalid") }}
+                      {{ form.username(class="input") }}
                       <div class="invalid-feedback">
                           {% for error in form.username.errors %}
                               <span>{{ error }}</span>
                           {% endfor %}
                       </div>
                   {% else %}
-                      {{ form.username(class="form-control form-control-lg") }}
+                      {{ form.username(class="input") }}
                   {% endif %}
-              </div>
-              <div class="form-group">
-                  {{ form.email.label(class="form-control-label") }}
+
+                  {{ form.email.label(class="input") }}
                   {% if form.email.errors %}
-                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      {{ form.email(class="input") }}
                       <div class="invalid-feedback">
                           {% for error in form.email.errors %}
                               <span>{{ error }}</span>
                           {% endfor %}
                       </div>
                   {% else %}
-                      {{ form.email(class="form-control form-control-lg") }}
+                      {{ form.email(class="input") }}
                   {% endif %}
-              </div>
-              <div class="form-group">
+
                   {{ form.picture.label() }}
-                  {{ form.picture(class="form-control-file") }}
+                  {{ form.picture(class="real-file") }}
                   {% if form.picture.errors %}
                       {% for error in form.picture.errors %}
                           <span class="text-danger">{{ error }}</span></br>
                       {% endfor %}
                   {% endif %}
-              </div>
-          </fieldset>
-          <div class="form-group">
-              {{ form.submit(class="btn btn-outline-info") }}
+
+                  <div class="form-group">
+              {{ form.submit(class="button") }}
           </div>
       </form>
+      </div>
   </div>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <script type="text/javascript">
-  rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
-  rg4js('enablePulse', true);
-</script>
 </body>
 </html>

@@ -1,127 +1,105 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <title>Text Summarization</title>
-    <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
-  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
-  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
-  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
-  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
-</script>
-</head>
-{% block content %}
-<div class="fixed-top">
-    <header class="topbar">
-        <div class="container">
-          <div class="row">
-            <!-- social icon-->
-            <div class="col-sm-12">
-              <ul class="social-network">
-                <li><a class="waves-effect waves-dark" href="https://www.instagram.com/andre_documentation/?hl=en"><i class="fa fa-instagram"></i></a></li>
-                <li><a class="waves-effect waves-dark" href="https://github.com/AndreLiu1225"><i class="fa fa-github"></i></a></li>
-                <li><a class="waves-effect waves-dark" href="https://www.linkedin.com/in/andre-liu-009733184/"><i class="fa fa-linkedin-square"></i></a></li>
-              </ul>
-            </div>
-  
-          </div>
-        </div>
-    </header>
-    <nav class="navbar navbar-expand-lg navbar-dark mx-background-top-linear">
-      <div class="container">
-        <a class="navbar-brand" href="index.html" style="text-transform: uppercase;"> Enigma.COM</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-  
-          <ul class="navbar-nav ml-auto">
-
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Summarize Url
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+      <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+      <title>Text Summarization</title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
+  </head>
+  <body>
+    <header>
+      <div class="container" id="navbarResponsive">
+        <h1 class="logo">TextByte</h1>
+        <nav>
+          <ul>
+            <li>
+              <a href="/">Summarize Url
                 <span class="sr-only">(current)</span>
               </a>
             </li>
   
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
+            <li>
+              <a href="/about">About</a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="/summarize-text">Summarize Text</a>
+            <li>
+              <a href="/summarize-text">Summarize Text</a>
             </li>
   
-            <li class="nav-item"> 
-            <a class="nav-link" href="/contact">Contact</a>
+            <li> 
+            <a href="/contact">Contact</a>
             </li>
 
             {% if current_user.is_authenticated %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              <li>
+              <a href="{{ url_for('logout') }}">Logout</a>
               </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('account') }}">Account</a>
+              <li>
+              <a href="{{ url_for('account') }}">Account</a>
               </li>
             {% else %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+              <li>
+              <a href="{{ url_for('login') }}">Login</a>
               </li>
 
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('register') }}">register</a>
+              <li>
+              <a href="{{ url_for('register') }}">register</a>
               </li>
             {% endif %}
           </ul>
-        </div>
-      </div>
-    </nav>
-  </div>
-  <h2 id="h2_content">Contact Us</h2>
- 
-  {% if success %}
+        </nav>    
+    </div>
+    </header>
+    {% if success %}
     <p>Thank you for your message. We'll get back to you shortly.</p>
  
-  {% else %}
- 
-    {% for message in form.name.errors %}
-      <div class="flash">{{ message }}</div>
-    {% endfor %}
- 
-    {% for message in form.email.errors %}
-      <div class="flash">{{ message }}</div>
-    {% endfor %}
- 
-    {% for message in form.subject.errors %}
-      <div class="flash">{{ message }}</div>
-    {% endfor %}
- 
-    {% for message in form.message.errors %}
-      <div class="flash">{{ message }}</div>
-    {% endfor %}
- 
-    <form action="{{ url_for('contact') }}" method=post>
+    {% else %}
+  
+      {% for message in form.name.errors %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+  
+      {% for message in form.email.errors %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+  
+      {% for message in form.subject.errors %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+  
+      {% for message in form.message.errors %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    <div class="summary">
+      <h1>Contact Us</h1>
+      <p>Enter your details and send us a message!</p>
+      <form method="POST" action="{{ url_for('contact') }}" style="text-align: center;">
       {{ form.hidden_tag() }}
  
       {{ form.name.label }}
-      {{ form.name }}
+      {{ form.name(class="input") }}
  
       {{ form.email.label }}
-      {{ form.email }}
+      {{ form.email(class="input") }}
  
       {{ form.subject.label }}
-      {{ form.subject }}
+      {{ form.subject(class="input") }}
  
       {{ form.message.label }}
       {{ form.message }}
- 
-      {{ form.submit }}
-    </form>
- 
-  {% endif %}
-{% endblock %}
+      <div class="wrapper" style="text-align: center;">
+      {{ form.submit(class="button") }}
+      </div>
+      </form>
+    </div>
+      {% endif %}
+  </body>
+</html>

@@ -1,37 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
     <title>Text Summarization</title>
-    <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
-  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
-  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
-  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
-  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
-</script>
 </head>
-<body id="results_body">
-  <article class="article_info">
+<body>
+  <header>
+    <div class="container" id="navbarResponsive">
+      <h1 class="logo">TextByte</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="/">Summarize Url
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/about">About</a>
+          </li>
+
+          <li>
+            <a href="/summarize-text">Summarize Text</a>
+          </li>
+
+          <li> 
+          <a href="/contact">Contact</a>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li>
+            <a href="{{ url_for('account') }}">Account</a>
+            </li>
+          {% else %}
+            <li>
+            <a href="{{ url_for('login') }}">Login</a>
+            </li>
+
+            <li>
+            <a href="{{ url_for('register') }}">register</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>    
+  </div>
+  </header>
+  <div class="summary">
     <h1>Article Information Directory</h1>
-    <article class="article_summary">
       <h2>Summary</h2>
       <p>{{ summary }}</p>
-    </article>
-    <article class="final_time">
       <h2>Reading Time</h2>
       <p><span style="color: #0091ea;">{{ final_reading_time }} min </span></p>
-    </article>
-    <article class="summary_time">
       <h2>Summary's Reading Time</h2>
       <p><span style="color: #0091ea;">{{ summary_reading_time }} min </span></p>
-    </article>
-  </article>
+  </div>
 </body>
