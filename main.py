@@ -43,14 +43,23 @@ from nltk.stem import WordNetLemmatizer
 from gensim.models import KeyedVectors
 from sklearn.preprocessing import OneHotEncoder
 
-# Below libraries are for feature representation using sklearn
+# Libraries below  are for feature representation using sklearn
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Below libraries are for similarity matrices using sklearn
+# Libraries below are for similarity matrices using sklearn
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel  
 from sklearn.metrics import pairwise_distances
 import requests
+
+# Libraries below are for mining PDF documents to be summarized later
+from io import StringIO, BytesIO
+import urllib.request
+
+import pdfminer
+from pdfminer.converter import TextConverter
+from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
+from pdfminer.pdfpage import PDFPage
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -93,7 +102,7 @@ def scrape_image(url):
     url_i.parse()
     return url_i.top_image
 
-df = pd.read_csv('recommendation/output/processed_news_articles.csv')
+df = pd.read_csv('C:/Users/liuis/Desktop/g_summary/Enigma/recommendation/output/processed_news_articles.csv')
 df = df[pd.isna(df["headline"])==False]
 df = df[pd.isna(df["short_description"])==False]
 
@@ -172,7 +181,7 @@ class RegistrationForm(FlaskForm):
 
 # Login form
 class LoginForm(FlaskForm):
-    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email"})
+    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your name"})
     password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
@@ -487,6 +496,58 @@ def analyze_url():
         post = Post(url=url, content=text, time_taken=final_readingTime, author=current_user)
         db.session.add(post)
         db.session.commit()
+        return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
+
+# Online PDF summarizer
+laparams = pdfminer.layout.LAParams()
+setattr(laparams, 'all_texts', True)
+
+def extract_text_from_pdf_url(url, user_agent=None):
+    resource_manager = PDFResourceManager()
+    fake_file_handle = StringIO()
+    converter = TextConverter(resource_manager, fake_file_handle, laparams=laparams)
+
+    if user_agent == None:
+        user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
+    
+    headers = {'User-Agent': user_agent}
+    request = urllib.request.Request(url, data=None, headers=headers)
+
+    response = urllib.request.urlopen(request).read()
+    fb = BytesIO(response)
+
+    page_interpreter = PDFPageInterpreter(resource_manager, converter)
+
+    for page in PDFPage.get_pages(fb,
+                                caching=True,
+                                check_extractable=True):
+        page_interpreter.process_page(page)
+    
+    text = fake_file_handle.getvalue()
+
+    # close open handles
+    fb.close()
+    converter.close()
+    fake_file_handle.close()
+
+    if text:
+        text = text.replace(u'\xa0', u' ')
+        return text
+
+@app.route('/analyze_pdf', methods=['GET', 'POST'])
+@login_required
+def analyze_pdf():
+    start = time.time()
+    if request.method == 'POST':
+        url = request.form.get("url")
+        text = extract_text_from_pdf_url(url)
+        # Summarization taking place
+        _summary = textrank(text)
+        # Final reading time
+        final_readingTime = readingTime(text)
+        summary_reading_time = readingTime(_summary)
+        end = time.time()
+        final_time = end - start
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
 
 if __name__ == '__main__':
