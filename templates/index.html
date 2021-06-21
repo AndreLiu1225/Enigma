@@ -73,6 +73,14 @@
         <input class="button" type="submit" name="submit" value="submit" style="display: block; margin: 0 auto;">
       </form>
     </div>
+    <div class="summary">
+      <h1>Online PDF Summarizer</h1>
+      <p>Enter a link to an online PDF</p>
+      <form method="POST" action="/analyze_pdf">
+        <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
+        <input class="button" type="submit" name="submit" value="submit" style="display: block; margin: 0 auto;">
+      </form>
+    </div>
     <script type="text/javascript">
   rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
   rg4js('enablePulse', true);
