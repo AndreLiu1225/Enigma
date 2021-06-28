@@ -181,7 +181,7 @@ class RegistrationForm(FlaskForm):
 
 # Login form
 class LoginForm(FlaskForm):
-    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your name"})
+    email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email"})
     password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
