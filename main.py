@@ -133,8 +133,8 @@ def print_result(request_content, indices, X):
 app = Flask(__name__)
 
 # Configurations for mailing service
-app.config['SECRET_KEY'] = "0c8973c8a5e001bb0c816a7b56c84f3a"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SECRET_KEY'] = '0c8973c8a5e001bb0c816a7b56c84f3a'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://cmnkmsgxohfmjp:c812819ca44407ae91fb103789b83ebc1f2931e27d28338e781d0ca244a90a93@ec2-52-86-25-51.compute-1.amazonaws.com:5432/d9i7pjrtae42h8'
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
