@@ -1,0 +1,237 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
+    <title>Text Summarization</title>
+</head>
+<body>
+  <header>
+    <div class="container" id="navbarResponsive">
+      <h1 class="logo">TextByte</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="/">Summarize Url
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/about">About</a>
+          </li>
+
+          <li>
+            <a href="/summarize-text">Summarize Text</a>
+          </li>
+
+          <li> 
+          <a href="/contact">Contact</a>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li>
+            <a href="{{ url_for('account') }}">Account</a>
+            </li>
+          {% else %}
+            <li>
+            <a href="{{ url_for('login') }}">Login</a>
+            </li>
+
+            <li>
+            <a href="{{ url_for('register') }}">register</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>    
+  </div>
+  </header>
+  <div class="summary">
+      <img class="rounded-circle account-img" src="{{ image_file }}" style="border: 1px solid #03BFCB; padding: 7px;">
+        <h2>{{ current_user.username }}</h2>
+        <p>{{ current_user.email }}</p>
+      <form method="POST" action="" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+              <h2>Account Info</h2>
+                  {{ form.username.label(class="input") }}
+
+                  {% if form.username.errors %}
+                      {{ form.username(class="input") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.username.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      {{ form.username(class="input") }}
+                  {% endif %}
+
+                  {{ form.email.label(class="input") }}
+                  {% if form.email.errors %}
+                      {{ form.email(class="input") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.email.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      {{ form.email(class="input") }}
+                  {% endif %}
+
+                  {{ form.picture.label() }}
+                  {{ form.picture(class="real-file") }}
+                  {% if form.picture.errors %}
+                      {% for error in form.picture.errors %}
+                          <span class="text-danger">{{ error }}</span></br>
+                      {% endfor %}
+                  {% endif %}
+
+                  <div class="form-group">
+              {{ form.submit(class="button") }}
+          </div>
+      </form>
+      </div>
+  </div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
+    <title>Text Summarization</title>
+    <script type="text/javascript">
+    !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
+  (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
+  f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
+  h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
+  e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
+</script>
+</head>
+<body>
+  <header>
+    <div class="container" id="navbarResponsive">
+      <h1 class="logo">TextByte</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="/">Summarize Url
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/about">About</a>
+          </li>
+
+          <li>
+            <a href="/summarize-text">Summarize Text</a>
+          </li>
+
+          <li> 
+          <a href="/contact">Contact</a>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li>
+            <a href="{{ url_for('account') }}">Account</a>
+            </li>
+          {% else %}
+            <li>
+            <a href="{{ url_for('login') }}">Login</a>
+            </li>
+
+            <li>
+            <a href="{{ url_for('register') }}">register</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>    
+  </div>
+  </header>
+  <div class="summary">
+      <img class="rounded-circle account-img" src="{{ image_file }}" style="border: 1px solid #03BFCB; padding: 7px;">
+        <h2>{{ current_user.username }}</h2>
+        <p>{{ current_user.email }}</p>
+      <form method="POST" action="" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+              <h2>Account Info</h2>
+                  {{ form.username.label(class="input") }}
+
+                  {% if form.username.errors %}
+                      {{ form.username(class="input") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.username.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      {{ form.username(class="input") }}
+                  {% endif %}
+
+                  {{ form.email.label(class="input") }}
+                  {% if form.email.errors %}
+                      {{ form.email(class="input") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.email.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      {{ form.email(class="input") }}
+                  {% endif %}
+
+                  {{ form.picture.label() }}
+                  {{ form.picture(class="real-file") }}
+                  {% if form.picture.errors %}
+                      {% for error in form.picture.errors %}
+                          <span class="text-danger">{{ error }}</span></br>
+                      {% endfor %}
+                  {% endif %}
+
+                  <div class="form-group">
+              {{ form.submit(class="button") }}
+          </div>
+      </form>
+      </div>
+  </div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
+  rg4js('enablePulse', true);
+</script>
+</body>
+</html>
+>>>>>>> bfc62bb6f1db2c91b82e5116f22b04dfe7adff36

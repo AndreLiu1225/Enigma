@@ -61,6 +61,12 @@ from pdfminer.converter import TextConverter
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 
+# Libraries for T5-Inference
+import torch
+from transformers import T5ForConditionalGeneration, T5Tokenizer
+from fastT5 import (OnnxT5, get_onnx_runtime_sessions,
+                    generate_onnx_representation, quantize)
+
 nltk.download('stopwords')
 nltk.download('punkt')
 stop_words = stopwords.words('english')
@@ -439,6 +445,58 @@ def textrank(text):
             s_list.append(sent)
     _summary = " ".join(s_list)
     return _summary
+
+"""T5 Inference"""
+PATH = "t5-model/"
+
+tokenizer = T5Tokenizer.from_pretrained("t5-base")
+model = generate_onnx_representation(PATH)
+
+quant_model_paths = quantize(model)
+
+model_sessions = get_onnx_runtime_sessions(quant_model_paths)
+
+model = OnnxT5(PATH, model_sessions)
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+def t5_inference(text):
+    preprocess_text = text.strip().replace("\n","")
+    tokenized_text = tokenizer.encode(preprocess_text, return_tensors="pt").to(device)
+
+    summary_ids = model.generate(
+                tokenized_text,
+                max_length=150, 
+                num_beams=2,
+                repetition_penalty=2.5, 
+                length_penalty=1.0, 
+                early_stopping=True
+            )
+
+    output = tokenizer.decode(summary_ids[0], skip_special_tokens=False)
+    return output
+
+@app.route('/summarized', methods=['GET', 'POST'])
+def infer():
+    start = time.time()
+    if request.method == "POST":
+        url = request.form.get("url")
+        rawtext = scrape_articles(url)
+        publish_date = scrape_publishdate(url)
+        authors = scrape_authors(url)
+        title = scrape_title(url)
+        _summary = t5_inference(rawtext)
+        final_readingTime = readingTime(rawtext)
+        summary_reading_time = readingTime(_summary)
+        end = time.time()
+        final_time = end - start
+        post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
+    else:
+        return render_template("index.html")
+
 
 # Reading time function
 def readingTime(text):
