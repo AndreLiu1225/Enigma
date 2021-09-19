@@ -466,7 +466,7 @@ def infer():
         authors = scrape_authors(url)
         title = scrape_title(url)
         _summary = query({"inputs": rawtext})
-        _summary = _summary["summary_text"]
+        _summary = _summary.get("summary_text")
         final_readingTime = readingTime(rawtext)
         summary_reading_time = readingTime(_summary)
         end = time.time()
