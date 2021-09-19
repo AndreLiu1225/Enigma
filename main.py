@@ -456,6 +456,7 @@ def query(payload):
 	return response.json()
 
 @app.route('/summarized', methods=['GET', 'POST'])
+@login_required
 def infer():
     start = time.time()
     if request.method == "POST":
