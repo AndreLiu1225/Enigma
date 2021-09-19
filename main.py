@@ -108,34 +108,6 @@ def scrape_image(url):
     url_i.parse()
     return url_i.top_image
 
-df = pd.read_csv('recommendation/output/processed_news_articles.csv')
-df = df[pd.isna(df["headline"])==False]
-df = df[pd.isna(df["short_description"])==False]
-
-# Accessing word relevancy via term frequency-inverse document frequency
-description = df["short_description"]
-vector = TfidfVectorizer(max_df=0.3, stop_words="english", lowercase=True, use_idf=True,
-    	                norm=u'l2', smooth_idf=True)
-tfidf = vector.fit_transform(description)
-
-def search(tfidf_matrix, model, request, top_n=2):
-    request_transfrom = model.transform([request])
-    similarity = np.dot(request_transfrom, np.transpose(tfidf_matrix))
-    x = np.array(similarity.toarray()[0])
-    indices = np.argsort(x)[-2:][::-1]
-    return indices
-
-def find_similar(tfidf_matrix, index, top_n=2):
-    cosine_similarities = linear_kernel(tfidf_matrix[index:index+1], tfidf_matrix).flatten()
-    related_docs_indices = [i for i in cosine_similarities.argsort()[::-1] if i != index]
-    return[index for index in related_docs_indices][0:top_n]
-
-def print_result(request_content, indices, X):
-    print('\nsearch: ' + request_content)
-    print('\nBest Results: ')
-    for i in indices:
-        yield X['link'].loc[i]
-
 app = Flask(__name__)
 
 # Configurations for mailing service
@@ -543,14 +515,6 @@ def analyze_url():
         publish_date = scrape_publishdate(url)
         authors = scrape_authors(url)
         title = scrape_title(url)
-        article = title.lower()
-        result = search(tfidf, vector, article, top_n=2)
-        recommended_data = print_result(title, result, df)
-        msg = Message('Here are some recommended articles to summarize!', sender="EnigmaText.service@gmail.com", recipients=[current_user.email])
-        for i in recommended_data:
-            msg.html = render_template('email.html', link=i, img_url=scrape_image(i), title=scrape_title(i))
-            mail.send(msg)
-            print(i)
         # Summarization taking place
         _summary = textrank(text)
         # Final reading time
