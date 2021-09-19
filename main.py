@@ -466,14 +466,15 @@ def infer():
         authors = scrape_authors(url)
         title = scrape_title(url)
         _summary = query({"inputs": rawtext})
+	_summary = _summary["summary_text"]
         final_readingTime = readingTime(rawtext)
-#         summary_reading_time = readingTime(_summary)
+        summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
         post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
         db.session.add(post)
         db.session.commit()
-        return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time =0)
+        return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time=summary_reading_time)
     else:
         return render_template("index.html")
 
