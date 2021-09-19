@@ -472,7 +472,7 @@ def infer():
         post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
         db.session.add(post)
         db.session.commit()
-        return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
+        return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime)
     else:
         return render_template("index.html")
 
