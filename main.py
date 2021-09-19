@@ -447,7 +447,7 @@ def textrank(text):
     return _summary
 
 """T5 Inference"""
-PATH = "t5-model/t5-base/"
+PATH = "./t5-model/t5-base/"
 
 tokenizer = T5Tokenizer.from_pretrained("t5-base")
 model = generate_onnx_representation(PATH)
