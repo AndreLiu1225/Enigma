@@ -452,8 +452,8 @@ API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 headers = {"Authorization": "Bearer api_EwTwRbogIXYiebTJAvPEIxyxUugItvZMhL"}
 
 def query(payload):
-	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.json()
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()
 
 @app.route('/summarized', methods=['GET', 'POST'])
 @login_required
@@ -467,7 +467,7 @@ def infer():
         title = scrape_title(url)
         _summary = query({"inputs": rawtext})
         for i in _summary:
-	    _summary = i["summary_text"]
+            _summary = i["summary_text"]
         final_readingTime = readingTime(rawtext)
         summary_reading_time = readingTime(_summary)
         end = time.time()
