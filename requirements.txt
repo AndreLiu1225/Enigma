@@ -70,6 +70,7 @@ pdfminer==20191125
 pickleshare==0.7.5
 Pillow==8.2.0
 pycparser==2.20
+psutil==5.7.1
 Pygments==2.9.0
 pyparsing==2.4.7
 pyrsistent==0.17.3
