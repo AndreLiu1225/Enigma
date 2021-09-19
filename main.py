@@ -466,7 +466,7 @@ def infer():
         title = scrape_title(url)
         _summary = query({"inputs": rawtext})
         final_readingTime = readingTime(rawtext)
-        summary_reading_time = readingTime(_summary)
+#         summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
         post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
