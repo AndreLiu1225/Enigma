@@ -64,8 +64,6 @@ from pdfminer.pdfpage import PDFPage
 # Libraries for T5-Inference
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
-from fastT5 import (OnnxT5, get_onnx_runtime_sessions,
-                    generate_onnx_representation, quantize)
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -419,35 +417,6 @@ def textrank(text):
     return _summary
 
 """T5 Inference"""
-# PATH = "./t5-model/t5-base/"
-
-# tokenizer = T5Tokenizer.from_pretrained("t5-base")
-# model = generate_onnx_representation(PATH)
-
-# quant_model_paths = quantize(model)
-
-# model_sessions = get_onnx_runtime_sessions(quant_model_paths)
-
-# model = OnnxT5(PATH, model_sessions)
-
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-# def t5_inference(text):
-#     preprocess_text = text.strip().replace("\n","")
-#     tokenized_text = tokenizer.encode(preprocess_text, return_tensors="pt").to(device)
-
-#     summary_ids = model.generate(
-#                 tokenized_text,
-#                 max_length=150, 
-#                 num_beams=2,
-#                 repetition_penalty=2.5, 
-#                 length_penalty=1.0, 
-#                 early_stopping=True
-#             )
-
-#     output = tokenizer.decode(summary_ids[0], skip_special_tokens=False)
-#     return output
-
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 headers = {"Authorization": "Bearer api_EwTwRbogIXYiebTJAvPEIxyxUugItvZMhL"}
 
