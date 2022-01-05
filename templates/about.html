@@ -69,12 +69,14 @@
       </nav>    
   </div>
   </header>
-  <img src="https://joeveer.com/fylo/images/illustration-intro.png" class="image">    
+  <img src="{{ url_for('static', filename='Bookmarks-pana.svg') }}" class="image">    
   <h2>Summarize any text and any news articles on the internet.</h2>
   <p>TextByte uses the TextRank algorithm to summarize any body of text or online articles into a more concise and understandable summary.</p>
+  <br>
+  <p>Images are from <a href="https://storyset.com/work">Work illustrations by Storyset</a></p>
   <div class="feature block">
     <div class="feature-box">
-      <img src="https://joeveer.com/fylo/images/icon-any-file.svg">
+      <img src="{{ url_for('static', filename='Ebook-bro.svg') }}">
       <h4>Summarize anything</h4>
       <p>Whether it is a wikipedia page, news article or a journal, you can summarize it by using TextByte. Our website also allows users to summarize online PDF documetns,
         which is useful when it comes to summarizing research papers.
@@ -83,9 +85,9 @@
   </div>
   <div class="feature-block">
     <div class="feature-box">
-      <img src="https://joeveer.com/fylo/images/icon-access-anywhere.svg" />
-      <h4>Recommendation Engine</h4>
-      <p>By using a Word2Vec model, TextByte will recommend you articles to read based on your previously summarized articles.</p>
+      <img src="{{ url_for('static', filename='Notebook-rafiki.svg') }}" />
+      <h4>Paraphrasing model</h4>
+      <p>One of newest feature is a machine learning model that is able to paraphrase and summarize any body of text.</p>
     </div>
   </div>
   <script type="text/javascript">
