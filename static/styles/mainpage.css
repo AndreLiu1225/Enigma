@@ -32,6 +32,32 @@ header::after {
   font-weight: 800;
 }
 
+.nav__links li a:hover {
+  color: #0088a9
+}
+
+/* NavBar Dropdown CSS */
+.nav__links li ul {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: relative;
+  width: 100%;
+}
+
+.nav__links li:hover ul {
+  position: absolute;
+  display: block;
+  align-items: vertical;
+  z-index: 1;
+  box-shadow: 0 4px 20px 0 rgba(34,68,123,0.2);
+  width: 220px;
+  padding: 12px;
+  background-color: #121212;
+}
+
+
 nav {
   float: right;
 }
