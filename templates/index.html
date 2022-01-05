@@ -70,7 +70,7 @@
     </div>
     </header>
     <div class="summary">
-      <h1>Input Your URL</h1>
+      <h1>Online Article Summmarizer</h1>
       <p>Enter a link to an online article</p>
       <form method="POST" action="/analyze_url">
         <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
@@ -78,15 +78,7 @@
       </form>
     </div>
     <div class="summary">
-      <h1>Online PDF Summarizer</h1>
-      <p>Enter a link to an online PDF</p>
-      <form method="POST" action="/analyze_pdf">
-        <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
-        <input class="button" type="submit" name="submit" value="submit" style="display: block; margin: 0 auto;">
-      </form>
-    </div>
-    <div class="summary">
-      <h1>Paraphrasing Summarizer for Articles</h1>
+      <h1>Paraphrase and Summarize</h1>
       <p>Enter a link to an online article</p>
       <form method="POST" action="/summarized">
         <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
