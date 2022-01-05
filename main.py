@@ -361,8 +361,12 @@ def about():
     return render_template('about.html')
 
 @app.route('/summarize-text')
-def inprogress():
+def text_handler():
     return render_template('summarize_text.html')
+
+@app.route('/summarize-pdf')
+def pdf_handler():
+    return render_template('summarize_pdf.html')
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
