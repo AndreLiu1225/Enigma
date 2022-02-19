@@ -429,7 +429,6 @@ def query(payload):
     return response.json()
 
 @app.route('/summarized', methods=['GET', 'POST'])
-@login_required
 def infer():
     start = time.time()
     if request.method == "POST":
@@ -482,7 +481,6 @@ def index():
     return render_template('index.html')
 
 @app.route('/analyze_url', methods=['GET', 'POST'])
-@login_required
 def analyze_url():
     start = time.time()
     if request.method == 'POST':
