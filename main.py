@@ -428,6 +428,7 @@ def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
 
+@login_required
 @app.route('/summarized', methods=['GET', 'POST'])
 def infer():
     start = time.time()
@@ -480,6 +481,7 @@ def index():
     posts=Post.query.all()
     return render_template('index.html')
 
+@login_required
 @app.route('/analyze_url', methods=['GET', 'POST'])
 def analyze_url():
     start = time.time()
