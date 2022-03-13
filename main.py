@@ -27,6 +27,7 @@ from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager, UserMixin
+# from flask_sitemap import Sitemap
 
 # General modules
 import newspaper
@@ -128,6 +129,39 @@ login_manager.login_message_category = 'info'
 mail.init_app(app)
 # Dealing with browser caching
 response = Response()
+# Generating sitemap
+# ext = Sitemap(app=app)
+@app.route("/sitemap")
+@app.route("/sitemap/")
+@app.route("/sitemap.xml")
+def sitemap():
+    """
+        Route to dynamically generate a sitemap of your website/application.
+        lastmod and priority tags omitted on static pages.
+        lastmod included on dynamic content such as blog posts.
+    """
+    from flask import make_response, request, render_template
+    import datetime
+    from urllib.parse import urlparse
+
+    host_components = urlparse(request.host_url)
+    host_base = host_components.scheme + "://" + host_components.netloc
+
+    # Static routes with static content
+    static_urls = list()
+    for rule in app.url_map.iter_rules():
+        if not str(rule).startswith("/admin") and not str(rule).startswith("/user"):
+            if "GET" in rule.methods and len(rule.arguments) == 0:
+                url = {
+                    "loc": f"{host_base}{str(rule)}"
+                }
+                static_urls.append(url)
+
+    xml_sitemap = render_template("public/sitemap.xml", static_urls=static_urls, host_base=host_base)
+    response = make_response(xml_sitemap)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response
 
 class ContactForm(FlaskForm):
     name = StringField("Name", [DataRequired(), Length(max=15, min=2)], render_kw={"placeholder": "Enter your name"})
