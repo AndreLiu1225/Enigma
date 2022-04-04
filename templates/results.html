@@ -26,28 +26,28 @@
     <div class="container" id="navbarResponsive">
       <h1 class="logo">TextByte</h1>
       <nav>
-        <ul class="nav__links">
-            <li>
-              <a href='#'>Summarize ▾</a>
-                <ul class="nav-dropdown">
-                  <a href="/">Summarize Url
-                    <span class="sr-only">(current)</span>
-                  </a>
-                </li>
-                <li>
-                    <a href="/summarize-pdf">Summarize PDF</a>
-                  </li>
-                <li>
-                  <a href="/about">About</a>
-                </li>
-
-                <li>
-                  <a href="/summarize-text">Summarize Text</a>
-                </li>
-              </ul>
+        <ul>
           <li>
+            <a href="/">Summarize Url
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/about">About</a>
+          </li>
+
+          <li>
+            <a href="/summarize-text">Summarize Text</a>
+          </li>
+
+          <li> 
           <a href="/contact">Contact</a>
           </li>
+
+          <li> 
+            <a href="/wordcounter">Word Counter</a>
+            </li>
 
           {% if current_user.is_authenticated %}
             <li>
