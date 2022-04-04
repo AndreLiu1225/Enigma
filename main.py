@@ -122,6 +122,7 @@ app.config["MAIL_USE_SSL"] = True
 app.config['MAIL_USE_TLS'] = False
 app.config["MAIL_USERNAME"] = "EnigmaText.service@gmail.com"
 app.config["MAIL_PASSWORD"] = "vtxrcldpmcwxagjz"
+app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.docx']
 ADMINS = ['andreliu2004@gmail.com']
 
 db = SQLAlchemy(app)
