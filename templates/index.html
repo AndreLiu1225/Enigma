@@ -1,95 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="em">
   <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-      <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
-      <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/mainpage.css') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}">
     <script type="text/javascript">
-  !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
+    !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
   (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
   f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
   h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
   e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
 </script>
-      <title>Text Summarization</title>
-      <meta name="description" content="Summarize any text on the internet!"/>
-      <meta name="keywords" content="Summarize, Summarise, Summarization, Paraphrase, Paraphraser, Paraphrasing, Words, Text, PDF, Documents, Reading, Writing, Essay, IB, Exams,
-                                     Education, Studying, Help, Study, Students, Teachers, College, University"/>
-      <meta name="google-site-verification" content="ClCfNbPIt2qiiSCzIQD9ILQXg9omM-w7EfTI_zccTro" />
-  </head>
-  <body>
-    <header>
-      <div class="container" id="navbarResponsive">
-        <h1 class="logo">TextByte</h1>
-        <nav>
-          <ul class="nav__links">
-            <li>
-              <a href='#'>Summarize ▾</a>
-                <ul class="nav-dropdown">
-                  <a href="/">Summarize Url
-                    <span class="sr-only">(current)</span>
-                  </a>
-                </li>
-                <li>
-                    <a href="/summarize-pdf">Summarize PDF</a>
-                  </li>
-                <li>
-                  <a href="/about">About</a>
-                </li>
+    <title>Text Summarization</title>
+</head>
+<body>
+  <header>
+    <div class="container" id="navbarResponsive">
+      <h1 class="logo">TextByte</h1>
+      <nav>
+        <ul class="nav__links">
+          <li>
+            <a href='#'>Summarize ▾</a>
+              <ul class="nav-dropdown">
+                <a href="/">Summarize Url
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+    
+              <li>
+                <a href="/about">About</a>
+              </li>
+              <li>
+                <a href="/summarize-text">Summarize Text</a>
+              </li>
+            </ul>
+          <li> 
+          <a href="/contact">Contact</a>
+          </li>
 
-                <li>
-                  <a href="/summarize-text">Summarize Text</a>
-                </li>
-              </ul>
-            <li> 
-            <a href="/contact">Contact</a>
+          <li> 
+          <a href="/wordcounter">Word Counter</a>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li>
+            <a href="{{ url_for('account') }}">Account</a>
+            </li>
+          {% else %}
+            <li>
+            <a href="{{ url_for('login') }}">Login</a>
             </li>
 
-            {% if current_user.is_authenticated %}
-              <li>
-              <a href="{{ url_for('logout') }}">Logout</a>
-              </li>
-              <li>
-              <a href="{{ url_for('account') }}">Account</a>
-              </li>
-            {% else %}
-              <li>
-              <a href="{{ url_for('login') }}">Login</a>
-              </li>
-
-              <li>
-              <a href="{{ url_for('register') }}">register</a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>    
+            <li>
+            <a href="{{ url_for('register') }}">register</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>    
+  </div>
+  </header>
+  <img src="{{ url_for('static', filename='Bookmarks-pana.svg') }}" class="image">    
+  <h2>Summarize any text and any news articles on the internet.</h2>
+  <p>TextByte uses the TextRank algorithm to summarize any body of text or online articles into a more concise and understandable summary.</p>
+  <div class="feature block">
+    <div class="feature-box">
+      <img src="{{ url_for('static', filename='Ebook-bro.svg') }}">
+      <h4>Summarize anything</h4>
+      <p>Whether it is a wikipedia page, news article or a journal, you can summarize it by using TextByte. Our website also allows users to summarize online PDF documetns,
+        which is useful when it comes to summarizing research papers.
+      </p>
     </div>
-    </header>
-    <div class="summary">
-      <h1>Online Article Summmarizer</h1>
-      <p>Enter a link to an online article</p>
-      <form method="POST" action="/analyze_url">
-        <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
-        <input class="button" type="submit" name="submit" value="submit" style="display: block; margin: 0 auto;">
-      </form>
+  </div>
+  <div class="feature-block">
+    <div class="feature-box">
+      <img src="{{ url_for('static', filename='Notebook-rafiki.svg') }}" />
+      <h4>Paraphrasing model</h4>
+      <p>One of newest feature is a machine learning model that is able to paraphrase and summarize any body of text.</p>
     </div>
-    <div class="summary">
-      <h1>Paraphrase and Summarize</h1>
-      <p>Enter a link to an online article</p>
-      <form method="POST" action="/summarized">
-        <input class="input" type = "text" name="url" placeholder="link to article" onfocus="this.value=''" required="true" value="{{ request.form.url }}"/>
-        <input class="button" type="submit" name="submit" value="submit" style="display: block; margin: 0 auto;">
-      </form>
-    </div>
-    <script type="text/javascript">
+  </div>
+  <script type="text/javascript">
   rg4js('apiKey', 'cA7R7d2nm10PzVOYudfL8Q');
   rg4js('enablePulse', true);
 </script>
