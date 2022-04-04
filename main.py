@@ -62,6 +62,10 @@ from pdfminer.converter import TextConverter
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 
+# python-docx
+from docx import Document
+from docx.shared import Pt
+
 # Libraries for T5-Inference
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
@@ -373,6 +377,58 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
+
+def count_docx(filename):
+    document = Document(filename)
+    text = ""
+    list_lens = []
+    for paragraph in document.paragraphs:
+        for run in paragraph.runs:
+            if ((run.font.size == Pt(12)) and (run.font.name == "Times New Roman") and not (run.bold)):
+                text = text + run.text + " "
+                words = list(filter(None, text.split(' ')))
+                list_lens.append(len(words))
+                length = list_lens[-1]
+                print(length)
+                with open('lengths.txt', 'r') as f:
+                    lines = f.readlines()
+                lines[0] = str(length)
+                with open('lengths.txt', 'w') as f:
+                    f.writelines(lines)
+                    f.close()
+            if ((run.font.size == Pt(12)) and (run.font.name == "Arial") and not (run.bold)):
+                text = text + run.text + " "
+                words = list(filter(None, text.split(' ')))
+                list_lens.append(len(words))
+                length = list_lens[-1]
+                print(length)
+                with open('lengths.txt', 'r') as f:
+                    lines = f.readlines()
+                lines[0] = str(length)
+                with open('lengths.txt', 'w') as f:
+                    f.writelines(lines)
+                    f.close()
+                
+@app.route('/wordcounter')
+def wordcounter():
+    return render_template("wordcounter.html")
+
+@app.route('/wordcount', methods=['GET', "POST"])
+def wordcount():
+    if request.method == "POST":
+        uploaded_file = request.files['file']
+        if uploaded_file.filename != "":
+            file_ext = os.path.splitext(uploaded_file.filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+                return render_template("500.html")
+            uploaded_file.save(uploaded_file.filename)
+            # uploaded_file.save(app.config["UPLOAD_PATH"], uploaded_file.filename)
+            document = uploaded_file.filename
+            count_docx(document)
+            f = open("lengths.txt", 'r')
+            length = f.read()
+            os.remove(os.path.join(uploaded_file.filename))
+    return render_template("counted_words.html", wordcount=length)
 
 @app.route('/results')
 def results():
