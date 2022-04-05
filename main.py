@@ -519,7 +519,7 @@ def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
 
-@login_required
+# @login_required
 @app.route('/summarized', methods=['GET', 'POST'])
 def infer():
     start = time.time()
@@ -536,9 +536,9 @@ def infer():
         summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
-        post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
-        db.session.add(post)
-        db.session.commit()
+#         post = Post(url=url, content=rawtext, time_taken=final_readingTime, author=current_user)
+#         db.session.add(post)
+#         db.session.commit()
         return render_template("results.html", summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time=summary_reading_time)
     else:
         return render_template("index.html")
@@ -569,10 +569,10 @@ def analyze():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    posts=Post.query.all()
+#     posts=Post.query.all()
     return render_template('index.html')
 
-@login_required
+# @login_required
 @app.route('/analyze_url', methods=['GET', 'POST'])
 def analyze_url():
     start = time.time()
@@ -589,9 +589,9 @@ def analyze_url():
         summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
-        post = Post(url=url, content=text, time_taken=final_readingTime, author=current_user)
-        db.session.add(post)
-        db.session.commit()
+#         post = Post(url=url, content=text, time_taken=final_readingTime, author=current_user)
+#         db.session.add(post)
+#         db.session.commit()
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
 
 # Online PDF summarizer
@@ -631,7 +631,7 @@ def extract_text_from_pdf_url(url, user_agent=None):
         return text
 
 @app.route('/analyze_pdf', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def analyze_pdf():
     start = time.time()
     if request.method == 'POST':
