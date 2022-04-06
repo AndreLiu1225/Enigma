@@ -386,7 +386,7 @@ def count_docx(filename):
     for paragraph in document.paragraphs:
         for run in paragraph.runs:
             if ((run.font.size == Pt(12)) and (run.font.name == "Times New Roman") and not (run.bold)):
-                text = text + run.text + " "
+                text = text + run.text + ""
                 words = list(filter(None, text.split(' ')))
                 list_lens.append(len(words))
                 length = list_lens[-1]
