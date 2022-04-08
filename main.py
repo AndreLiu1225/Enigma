@@ -36,6 +36,7 @@ import email_validator
 import os
 from waitress import serve
 from newspaper import fulltext
+from werkzeug.utils import secure_filename
 
 # Recommendation modules
 from nltk.corpus import stopwords
@@ -422,13 +423,14 @@ def wordcount():
             file_ext = os.path.splitext(uploaded_file.filename)[1]
             if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                 return render_template("500.html")
-            uploaded_file.save(uploaded_file.filename)
-            # uploaded_file.save(app.config["UPLOAD_PATH"], uploaded_file.filename)
-            document = uploaded_file.filename
+            filename = secure_filename(uploaded_file.filename)
+            uploaded_file.save(filename)
+            # uploaded_file.save(app.config["UPLOAD_PATH"], filename)
+            document = filename
             count_docx(document)
             f = open("lengths.txt", 'r')
             length = f.read()
-            os.remove(os.path.join(uploaded_file.filename))
+            os.remove(os.path.join(filename))
     return render_template("counted_words.html", wordcount=length)
 
 @app.route('/results')
