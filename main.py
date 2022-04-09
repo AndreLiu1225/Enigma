@@ -400,7 +400,7 @@ def count_docx(filename):
                     f.writelines(lines)
                     f.close()
             if ((run.font.size == Pt(12)) and (run.font.name == "Arial") and not (run.bold)):
-                text = text + run.text + " "
+                text = text + run.text + ""
                 words = list(filter(None, text.split(' ')))
                 list_lens.append(len(words))
                 length = list_lens[-1]
