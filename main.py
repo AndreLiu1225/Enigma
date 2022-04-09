@@ -425,12 +425,12 @@ def wordcount():
             if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                 return render_template("500.html")
             filename = secure_filename(uploaded_file.filename)
-            uploaded_file.save(app.config["UPLOAD_PATH"], filename)
+            uploaded_file.save(filename)
             document = filename
             count_docx(document)
             f = open("lengths.txt", 'r')
             length = f.read()
-            os.remove(os.path.join(app.config["UPLOAD_PATH"], filename))
+            os.remove(os.path.join(filename))
     return render_template("counted_words.html", wordcount=length)
 
 @app.route('/results')
