@@ -124,7 +124,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config["MAIL_USERNAME"] = "EnigmaText.service@gmail.com"
 app.config["MAIL_PASSWORD"] = "vtxrcldpmcwxagjz"
 app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.docx']
-app.confg['UPLOAD_FOLDER'] = "./static/uploads/"
+app.config['UPLOAD_FOLDER'] = "./static/uploads/"
 ADMINS = ['andreliu2004@gmail.com']
 
 db = SQLAlchemy(app)
