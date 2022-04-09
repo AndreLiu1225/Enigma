@@ -124,6 +124,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config["MAIL_USERNAME"] = "EnigmaText.service@gmail.com"
 app.config["MAIL_PASSWORD"] = "vtxrcldpmcwxagjz"
 app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.docx']
+app.confg['UPLOAD_FOLDER'] = "./static/uploads/"
 ADMINS = ['andreliu2004@gmail.com']
 
 db = SQLAlchemy(app)
@@ -424,13 +425,12 @@ def wordcount():
             if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                 return render_template("500.html")
             filename = secure_filename(uploaded_file.filename)
-            uploaded_file.save(filename)
-            # uploaded_file.save(app.config["UPLOAD_PATH"], filename)
+            uploaded_file.save(app.config["UPLOAD_PATH"], filename)
             document = filename
             count_docx(document)
             f = open("lengths.txt", 'r')
             length = f.read()
-            os.remove(os.path.join(filename))
+            os.remove(os.path.join(app.config["UPLOAD_PATH"], filename))
     return render_template("counted_words.html", wordcount=length)
 
 @app.route('/results')
