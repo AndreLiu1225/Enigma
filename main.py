@@ -382,7 +382,9 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 def count_docx(filename):
-    document = Document(filename)
+    f = open(filename, "rb")
+    document = Document(f)
+    f.close()
     text = ""
     list_lens = []
     for paragraph in document.paragraphs:
