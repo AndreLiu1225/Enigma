@@ -413,6 +413,15 @@ def count_docx(filename):
                 with open('lengths.txt', 'w') as f:
                     f.writelines(lines)
                     f.close()
+            else:
+                text = text + run.text + ""
+                words = list(filter(None, text.split(' ')))
+                list_lens.append(len(words))
+                length = list_lens[-1]
+                print(length)
+                with open('lengths.txt', 'w') as f:
+                    f.write(str(length))
+                    f.close()
                 
 @app.route('/wordcounter')
 def wordcounter():
