@@ -580,6 +580,7 @@ def analyze():
         end = time.time()
         final_time = end - start
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
+        return jsonify(summary=_summary)
     else:
         return render_template("summarize_text.html")
 
