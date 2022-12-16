@@ -580,9 +580,17 @@ def analyze():
         end = time.time()
         final_time = end - start
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
-        return jsonify(summary=_summary)
     else:
         return render_template("summarize_text.html")
+    
+@app.route('/flutter_api', methods=['GET', 'POST'])
+def flutter_api():
+    start = time.time()
+    if request.method == "POST":
+        rawtext = request.form.get('rawtext')
+        # Summarization taking place
+        _summary = textrank(rawtext)
+        return jsonify(summary=_summary)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
