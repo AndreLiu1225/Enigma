@@ -590,7 +590,12 @@ def flutter_api():
         rawtext = request.form.get('rawtext')
         # Summarization taking place
         _summary = textrank(rawtext)
-        return jsonify(summary=_summary)
+        # Final reading time
+        final_readingTime = readingTime(rawtext)
+        summary_reading_time = readingTime(_summary)
+        end = time.time()
+        final_time = end - start
+        return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
