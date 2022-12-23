@@ -582,16 +582,20 @@ def analyze():
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
     else:
         return render_template("summarize_text.html")
-    
+
 @app.route('/flutter_api', methods=['GET', 'POST'])
 def flutter_api():
     start = time.time()
-    if request.method == "POST":
-        rawtext = request.form.get('rawtext')
+    if request.method == 'POST':
+        url = request.form.get("url")
+        text = scrape_articles(url)
+        publish_date = scrape_publishdate(url)
+        authors = scrape_authors(url)
+        title = scrape_title(url)
         # Summarization taking place
-        _summary = textrank(rawtext)
+        _summary = textrank(text)
         # Final reading time
-        final_readingTime = readingTime(rawtext)
+        final_readingTime = readingTime(text)
         summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
