@@ -32,6 +32,7 @@ from flask_login import login_user, current_user, logout_user, login_required, L
 # General modules
 import newspaper
 import json
+import threading
 import email_validator
 import os
 from waitress import serve
@@ -111,6 +112,139 @@ def scrape_image(url):
     url_i.download()
     url_i.parse()
     return url_i.top_image
+
+# Recommendation Logic
+api_key = "d61459faea67403d916716265b575855"
+
+def headlinesFromApi():
+    threading.Timer(86400, headlinesFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key 
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["title"])
+    return results
+
+def descsFromApi():
+    threading.Timer(86400, descsFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key,
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["description"])
+    return results
+
+def urlsFromApi():
+    threading.Timer(86400, urlsFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key,
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["url"])
+    return results
+
+def urlImgFromApi():
+    threading.Timer(86400, urlImgFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key,
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["urlToImage"])
+    return results
+
+def datesFromApi():
+    threading.Timer(86400, datesFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key,
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["publishedAt"])
+    return results
+
+def contentsFromApi():
+    threading.Timer(86400, contentsFromApi).start()
+    url = "http://newsapi.org/v2/top-headlines?country=us"
+    query_params = {
+        "language": "en",
+        "apiKey": api_key,
+    }
+    response = requests.get(url, params=query_params).json()
+    articles = response["articles"]
+    results = []
+    for a in articles:
+        results.append(a["content"])
+    return results
+
+headlines = headlinesFromApi()
+descs = descsFromApi()
+urls = urlsFromApi()
+imgs = urlImgFromApi()
+publishedAts = datesFromApi()
+contents = contentsFromApi()
+article_dict = {
+    "headline": headlines,
+    "description": descs,
+    "url": urls,
+    "urlToImage": imgs,
+    "publishedAt": publishedAts,
+    "content": contents}
+
+df = pd.DataFrame(article_dict)
+df = df[pd.isna(df["headline"])==False]
+df = df[pd.isna(df["description"])==False]
+df = df[pd.isna(df["url"])==False]
+df = df[pd.isna(df["urlToImage"])==False]
+df = df[pd.isna(df["publishedAt"])==False]
+df = df[pd.isna(df["content"])==False]
+
+# Accessing word relevancy via term frequency-inverse document frequency
+description = df["description"]
+vector = TfidfVectorizer(max_df=0.3, stop_words="english", lowercase=True, use_idf=True,
+    	                norm=u'l2', smooth_idf=True)
+tfidf = vector.fit_transform(description)
+
+def search(tfidf_matrix, model, request, top_n=2):
+    request_transfrom = model.transform([request])
+    similarity = np.dot(request_transfrom, np.transpose(tfidf_matrix))
+    x = np.array(similarity.toarray()[0])
+    indices = np.argsort(x)[-2:][::-1]
+    return indices
+
+def find_similar(tfidf_matrix, index, top_n=2):
+    cosine_similarities = linear_kernel(tfidf_matrix[index:index+1], tfidf_matrix).flatten()
+    related_docs_indices = [i for i in cosine_similarities.argsort()[::-1] if i != index]
+    return[index for index in related_docs_indices][0:top_n]
+
+def print_result(request_content, indices, X):
+    print('\nsearch: ' + request_content)
+    print('\nBest Results: ')
+    for i in indices:
+        yield X['headline'].loc[i]
 
 app = Flask(__name__)
 
@@ -600,6 +734,14 @@ def flutter_api():
         end = time.time()
         final_time = end - start
         return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time)
+    
+@app.route('/flutter_rec', methods=['GET','POST'])
+def flutter_rec():
+    if request.method == 'POST':
+        title = request.form.get("title")
+        result = search(tfidf, vector, title, top_n=3)
+        recommended_data = print_result(title, result, df)
+        return jsonify(recommended_data=recommended_data)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
