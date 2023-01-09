@@ -723,9 +723,6 @@ def flutter_api():
     if request.method == 'POST':
         url = request.form.get("url")
         text = scrape_articles(url)
-        publish_date = scrape_publishdate(url)
-        authors = scrape_authors(url)
-        title = scrape_title(url)
         # Summarization taking place
         _summary = textrank(text)
         # Final reading time
@@ -733,7 +730,22 @@ def flutter_api():
         summary_reading_time = readingTime(_summary)
         end = time.time()
         final_time = end - start
-        return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time)
+        return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time, call_time=final_time)
+    
+@app.route('/flutter_api_ml', methods=['GET', 'POST'])
+def infer():
+    start = time.time()
+    if request.method == "POST":
+        url = request.form.get("url")
+        rawtext = scrape_articles(url)
+        _summary = query({"inputs": rawtext})
+        for i in _summary:
+            _summary = i["summary_text"]
+        final_readingTime = readingTime(rawtext)
+        summary_reading_time = readingTime(_summary)
+        end = time.time()
+        final_time = end - start
+        return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time, call_time=final_time)
     
 @app.route('/flutter_rec', methods=['GET','POST'])
 def flutter_rec():
