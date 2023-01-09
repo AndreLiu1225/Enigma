@@ -732,7 +732,7 @@ def flutter_api():
         final_time = end - start
         return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time, call_time=final_time)
     
-@app.route('/flutter_api_ml', methods=['GET', 'POST'])
+@app.route('/infer_api', methods=['GET', 'POST'])
 def infer():
     start = time.time()
     if request.method == "POST":
