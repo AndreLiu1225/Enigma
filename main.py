@@ -733,7 +733,7 @@ def flutter_api():
         return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time, call_time=final_time)
     
 @app.route('/infer_api', methods=['GET', 'POST'])
-def infer():
+def flutter_api_infer():
     start = time.time()
     if request.method == "POST":
         url = request.form.get("url")
