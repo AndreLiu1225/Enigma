@@ -94,7 +94,7 @@
       <h1>Contact Us</h1>
       <p>Enter your details and send us a message!</p>
       <form method="POST" action="{{ url_for('contact') }}" style="text-align: center;">
-      {{ form.hidden_tag() }}
+      {{ form.hidden_tag }}
  
       {{ form.name.label }}
       {{ form.name(class="input") }}

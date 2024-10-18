@@ -6,7 +6,7 @@ from string import punctuation
 from datetime import datetime
 import secrets
 from PIL import Image
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous.url_safe import URLSafeTimedSerializer as Serializer
 
 # Importing summarization modules
 import re
@@ -19,9 +19,9 @@ import networkx as nx
 
 # Flask packages
 from flask import Flask, render_template, request, jsonify, url_for, flash, redirect, Response
-from flask_wtf import FlaskForm
+from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, TextField, SubmitField, TextAreaField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
@@ -35,6 +35,7 @@ import json
 import threading
 import email_validator
 import os
+import sys
 from waitress import serve
 from newspaper import fulltext
 from werkzeug.utils import secure_filename
@@ -69,11 +70,11 @@ from docx import Document
 from docx.shared import Pt
 
 # Libraries for T5-Inference
-import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('punkt_tab')
 stop_words = stopwords.words('english')
 
 #url="%s" % (url)
@@ -114,137 +115,137 @@ def scrape_image(url):
     return url_i.top_image
 
 # Recommendation Logic
-api_key = "d61459faea67403d916716265b575855"
+# api_key = "d61459faea67403d916716265b575855"
 
-def headlinesFromApi():
-    threading.Timer(86400, headlinesFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key 
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["title"])
-    return results
+# def headlinesFromApi():
+#     threading.Timer(86400, headlinesFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key 
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["title"])
+#     return results
 
-def descsFromApi():
-    threading.Timer(86400, descsFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key,
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["description"])
-    return results
+# def descsFromApi():
+#     threading.Timer(86400, descsFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key,
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["description"])
+#     return results
 
-def urlsFromApi():
-    threading.Timer(86400, urlsFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key,
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["url"])
-    return results
+# def urlsFromApi():
+#     threading.Timer(86400, urlsFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key,
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["url"])
+#     return results
 
-def urlImgFromApi():
-    threading.Timer(86400, urlImgFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key,
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["urlToImage"])
-    return results
+# def urlImgFromApi():
+#     threading.Timer(86400, urlImgFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key,
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["urlToImage"])
+#     return results
 
-def datesFromApi():
-    threading.Timer(86400, datesFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key,
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["publishedAt"])
-    return results
+# def datesFromApi():
+#     threading.Timer(86400, datesFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key,
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["publishedAt"])
+#     return results
 
-def contentsFromApi():
-    threading.Timer(86400, contentsFromApi).start()
-    url = "http://newsapi.org/v2/top-headlines?country=us"
-    query_params = {
-        "language": "en",
-        "apiKey": api_key,
-    }
-    response = requests.get(url, params=query_params).json()
-    articles = response["articles"]
-    results = []
-    for a in articles:
-        results.append(a["content"])
-    return results
+# def contentsFromApi():
+#     threading.Timer(86400, contentsFromApi).start()
+#     url = "http://newsapi.org/v2/top-headlines?country=us"
+#     query_params = {
+#         "language": "en",
+#         "apiKey": api_key,
+#     }
+#     response = requests.get(url, params=query_params).json()
+#     articles = response["articles"]
+#     results = []
+#     for a in articles:
+#         results.append(a["content"])
+#     return results
 
-headlines = headlinesFromApi()
-descs = descsFromApi()
-urls = urlsFromApi()
-imgs = urlImgFromApi()
-publishedAts = datesFromApi()
-contents = contentsFromApi()
-article_dict = {
-    "headline": headlines,
-    "description": descs,
-    "url": urls,
-    "urlToImage": imgs,
-    "publishedAt": publishedAts,
-    "content": contents}
+# headlines = headlinesFromApi()
+# descs = descsFromApi()
+# urls = urlsFromApi()
+# imgs = urlImgFromApi()
+# publishedAts = datesFromApi()
+# contents = contentsFromApi()
+# article_dict = {
+#     "headline": headlines,
+#     "description": descs,
+#     "url": urls,
+#     "urlToImage": imgs,
+#     "publishedAt": publishedAts,
+#     "content": contents}
 
-df = pd.DataFrame(article_dict)
-df = df[pd.isna(df["headline"])==False]
-df = df[pd.isna(df["description"])==False]
-df = df[pd.isna(df["url"])==False]
-df = df[pd.isna(df["urlToImage"])==False]
-df = df[pd.isna(df["publishedAt"])==False]
-df = df[pd.isna(df["content"])==False]
+# df = pd.DataFrame(article_dict)
+# df = df[pd.isna(df["headline"])==False]
+# df = df[pd.isna(df["description"])==False]
+# df = df[pd.isna(df["url"])==False]
+# df = df[pd.isna(df["urlToImage"])==False]
+# df = df[pd.isna(df["publishedAt"])==False]
+# df = df[pd.isna(df["content"])==False]
 
-# Accessing word relevancy via term frequency-inverse document frequency
-description = df["description"]
-vector = TfidfVectorizer(max_df=0.3, stop_words="english", lowercase=True, use_idf=True,
-    	                norm=u'l2', smooth_idf=True)
-tfidf = vector.fit_transform(description)
+# # Accessing word relevancy via term frequency-inverse document frequency
+# description = df["description"]
+# vector = TfidfVectorizer(max_df=0.3, stop_words="english", lowercase=True, use_idf=True,
+#     	                norm=u'l2', smooth_idf=True)
+# tfidf = vector.fit_transform(description)
 
-def search(tfidf_matrix, model, request, top_n=2):
-    request_transfrom = model.transform([request])
-    similarity = np.dot(request_transfrom, np.transpose(tfidf_matrix))
-    x = np.array(similarity.toarray()[0])
-    indices = np.argsort(x)[-2:][::-1]
-    return indices
+# def search(tfidf_matrix, model, request, top_n=2):
+#     request_transfrom = model.transform([request])
+#     similarity = np.dot(request_transfrom, np.transpose(tfidf_matrix))
+#     x = np.array(similarity.toarray()[0])
+#     indices = np.argsort(x)[-2:][::-1]
+#     return indices
 
-def find_similar(tfidf_matrix, index, top_n=2):
-    cosine_similarities = linear_kernel(tfidf_matrix[index:index+1], tfidf_matrix).flatten()
-    related_docs_indices = [i for i in cosine_similarities.argsort()[::-1] if i != index]
-    return[index for index in related_docs_indices][0:top_n]
+# def find_similar(tfidf_matrix, index, top_n=2):
+#     cosine_similarities = linear_kernel(tfidf_matrix[index:index+1], tfidf_matrix).flatten()
+#     related_docs_indices = [i for i in cosine_similarities.argsort()[::-1] if i != index]
+#     return[index for index in related_docs_indices][0:top_n]
 
-def print_result(request_content, indices, X):
-    print('\nsearch: ' + request_content)
-    print('\nBest Results: ')
-    for i in indices:
-        yield X['headline'].loc[i]
+# def print_result(request_content, indices, X):
+#     print('\nsearch: ' + request_content)
+#     print('\nBest Results: ')
+#     for i in indices:
+#         yield X['headline'].loc[i]
 
 app = Flask(__name__)
 
@@ -304,7 +305,7 @@ def sitemap():
 
     return response
 
-class ContactForm(FlaskForm):
+class ContactForm(Form):
     name = StringField("Name", [DataRequired(), Length(max=15, min=2)], render_kw={"placeholder": "Enter your name"})
     email = StringField("Email", [DataRequired(), Email(message=('Not a valid email address')), Length(max=30, min=2)], render_kw={"placeholder": "Enter your email"})
     subject = StringField("Subject", [DataRequired(), Length(max=30, min=2)], render_kw={"placeholder": "Enter the subject of your email"})
@@ -312,7 +313,7 @@ class ContactForm(FlaskForm):
     submit = SubmitField("Send")
 
 # Registration form
-class RegistrationForm(FlaskForm):
+class RegistrationForm(Form):
     username = StringField('Username', [DataRequired(), Length(max=15, min=2)], render_kw={"placeholder": "Enter your username"})
     email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email"})
     password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
@@ -331,13 +332,13 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('That email is taken. Please choose a different one.')
 
 # Login form
-class LoginForm(FlaskForm):
+class LoginForm(Form):
     email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email"})
     password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-class UpdateAccountForm(FlaskForm):
+class UpdateAccountForm(Form):
     username = StringField('Username', [DataRequired(), Length(max=15, min=2)])
     email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)])
     picture = FileField('Update Profile Pic', validators=[FileAllowed(['jpg','png', 'jpeg'])])
@@ -356,7 +357,7 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
 
-class RequestResetForm(FlaskForm):
+class RequestResetForm(Form):
     email = StringField('Email', [DataRequired(), Email(message=('Not a valid email address')), Length(max=50)], render_kw={"placeholder": "Enter your email and we will get back to you shortly"})
     submit = SubmitField('Request Password Reset')
 
@@ -365,7 +366,7 @@ class RequestResetForm(FlaskForm):
         if user is None:
             raise ValidationError('There is no account with that email. You must register first.')
 
-class ResetPasswordForm(FlaskForm):
+class ResetPasswordForm(Form):
     password = PasswordField('Password', [DataRequired()], render_kw={"placeholder": "Enter your password"})
     confirm_password = PasswordField('Confirm Password', [DataRequired(), EqualTo('password')], render_kw={"placeholder": "Confirm your password"})
     submit = SubmitField('Reset Password')
@@ -663,7 +664,7 @@ def textrank(text):
 
 """T5 Inference"""
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-headers = {"Authorization": "Bearer api_EwTwRbogIXYiebTJAvPEIxyxUugItvZMhL"}
+headers = {"Authorization": "Bearer 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"}
 
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
@@ -680,6 +681,8 @@ def infer():
         authors = scrape_authors(url)
         title = scrape_title(url)
         _summary = query({"inputs": rawtext})
+        _summary = _summary[0].get("summary_text")
+        app.logger.info("_summary: ", _summary)
         final_readingTime = readingTime(rawtext)
         summary_reading_time = readingTime(_summary)
         end = time.time()
@@ -745,13 +748,13 @@ def flutter_api_infer():
         final_time = end - start
         return jsonify(summary=_summary, final_readingTime=final_readingTime, summary_reading_time=summary_reading_time, call_time=final_time)
     
-@app.route('/flutter_rec', methods=['GET','POST'])
-def flutter_rec():
-    if request.method == 'POST':
-        title = request.form.get("title")
-        result = search(tfidf, vector, title, top_n=3)
-        recommended_data = print_result(title, result, df)
-        return jsonify(recommended_data=recommended_data)
+# @app.route('/flutter_rec', methods=['GET','POST'])
+# def flutter_rec():
+#     if request.method == 'POST':
+#         title = request.form.get("title")
+#         result = search(tfidf, vector, title, top_n=3)
+#         recommended_data = print_result(title, result, df)
+#         return jsonify(recommended_data=recommended_data)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -833,4 +836,4 @@ def analyze_pdf():
         return render_template('results.html', summary=_summary, final_time=final_time, final_reading_time=final_readingTime, summary_reading_time = summary_reading_time)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
